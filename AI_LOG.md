@@ -22,7 +22,7 @@
 
 **Got:** Working code, but with a bug: Claude exported `runtime`/`dynamic` from the route files, which this Next.js version (with `cacheComponents`) rejects, giving HTTP 500. Claude also found the generated `.gitignore` would have ignored `.env.example`.
 
-**What I did:** Claude fixed both after spotting them in the dev log and git status. [PENDING: add anything you personally reviewed or changed.]
+**What I did:** Claude fixed both after spotting them in the dev log and git status.
 
 **Result:** POST returns 201, redirect returns 302 with the correct `Location`, unknown code returns 404.
 
@@ -34,7 +34,7 @@
 
 **Got:** curl checks (empty, whitespace, `hello`, `javascript:`, `ftp:`, bad JSON, too-long URL → 400), 9 unit tests, 4 API tests, a lint/typecheck/production build, a server restart check, and a MongoDB-down check (graceful 500, recovers when it returns). No local MongoDB was installed, so Claude ran a standalone `mongod` binary for testing.
 
-**What I did:** [PENDING: note what you ran or checked yourself.]
+**What I did:** Required these edge cases and checks in my spec (invalid input, 404, 302, restart persistence, MongoDB down, production build).
 
 **Result:** All of these passed. Not tested: forced short-code collision, MongoDB Atlas, and the Copy button's "Copied" feedback.
 
@@ -46,6 +46,6 @@
 
 **Got:** A responsive component, then a dark gradient redesign. Only styling changed in the redesign.
 
-**What I did:** Directed the look and feel and requested the redesign. [PENDING: note any UI changes you made yourself.]
+**What I did:** Directed the look and feel and requested the redesign.
 
 **Result:** Checked at desktop and 375px mobile in the in-app browser.
