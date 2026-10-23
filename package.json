@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "test": "node --test tests/url.test.ts",
+    "test:api": "node --test tests/api.test.ts"
   },
   "dependencies": {
     "mongoose": "^9.11.3",
