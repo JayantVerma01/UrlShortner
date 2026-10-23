@@ -89,12 +89,16 @@ export default function UrlShortener() {
   }
 
   return (
-    <div className="w-full max-w-xl">
-      <form onSubmit={handleSubmit} noValidate className="space-y-3">
-        <label htmlFor="url" className="block text-sm font-medium text-slate-700">
+    <div className="w-full">
+      <form onSubmit={handleSubmit} noValidate>
+        <label htmlFor="url" className="sr-only">
           Long URL
         </label>
-        <div className="flex flex-col gap-3 sm:flex-row">
+        <div
+          className={`flex flex-col gap-2 rounded-2xl border bg-white/[0.04] p-2 shadow-2xl shadow-violet-950/40 backdrop-blur transition focus-within:border-violet-400/60 focus-within:ring-4 focus-within:ring-violet-500/15 sm:flex-row ${
+            error ? "border-red-400/50" : "border-white/10"
+          }`}
+        >
           <input
             id="url"
             type="text"
@@ -105,19 +109,25 @@ export default function UrlShortener() {
             onChange={(e) => setUrl(e.target.value)}
             aria-invalid={error ? true : undefined}
             aria-describedby={error ? "url-error" : undefined}
-            className="min-w-0 flex-1 rounded-xl border border-slate-300 bg-white px-4 py-3 text-slate-900 shadow-sm outline-none placeholder:text-slate-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200"
+            className="min-w-0 flex-1 bg-transparent px-4 py-3.5 text-base text-white outline-none placeholder:text-slate-500"
           />
           <button
             type="submit"
             disabled={loading}
-            className="rounded-xl bg-indigo-600 px-6 py-3 font-medium text-white shadow-sm transition hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-60"
+            className="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-violet-500 to-cyan-500 px-7 py-3.5 font-semibold text-white shadow-lg shadow-violet-500/25 transition hover:brightness-110 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-70"
           >
+            {loading && (
+              <span
+                aria-hidden
+                className="h-4 w-4 animate-spin rounded-full border-2 border-white/40 border-t-white"
+              />
+            )}
             {loading ? "Shortening…" : "Shorten"}
           </button>
         </div>
         {error && (
-          <p id="url-error" role="alert" className="text-sm text-red-600">
-            {error}
+          <p id="url-error" role="alert" className="animate-rise mt-3 flex items-center gap-2 text-sm text-red-300">
+            <span aria-hidden>⚠</span> {error}
           </p>
         )}
       </form>
@@ -125,37 +135,45 @@ export default function UrlShortener() {
       {result && (
         <section
           aria-label="Your short link"
-          className="mt-6 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"
+          className="animate-rise mt-8 overflow-hidden rounded-2xl border border-emerald-400/25 bg-gradient-to-b from-emerald-400/10 to-white/[0.03] p-5 backdrop-blur sm:p-6"
         >
-          <p className="text-sm text-slate-500">Your short link</p>
-          <a
-            href={result.shortUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="mt-1 block break-all text-lg font-semibold text-indigo-600 hover:underline"
-          >
-            {result.shortUrl}
-          </a>
-          <p className="mt-1 truncate text-sm text-slate-500" title={result.originalUrl}>
-            {result.originalUrl}
+          <p className="flex items-center gap-2 text-sm font-medium text-emerald-300">
+            <span aria-hidden className="grid h-5 w-5 place-items-center rounded-full bg-emerald-400/20 text-xs">
+              ✓
+            </span>
+            Your short link is ready
           </p>
-          <div className="mt-4 flex gap-2">
-            <button
-              type="button"
-              onClick={() => copy(result.shortUrl)}
-              className="rounded-lg border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
-            >
-              {copied === result.shortUrl ? "Copied!" : "Copy"}
-            </button>
+          <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <a
               href={result.shortUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="rounded-lg border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
+              className="break-all text-2xl font-semibold text-white hover:text-cyan-300 sm:text-3xl"
             >
-              Open
+              {result.shortUrl}
             </a>
+            <div className="flex shrink-0 gap-2">
+              <button
+                type="button"
+                onClick={() => copy(result.shortUrl)}
+                className="rounded-xl bg-white px-5 py-2.5 text-sm font-semibold text-slate-900 transition hover:bg-slate-200 active:scale-[0.98]"
+              >
+                {copied === result.shortUrl ? "Copied ✓" : "Copy"}
+              </button>
+              <a
+                href={result.shortUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="rounded-xl border border-white/15 bg-white/5 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-white/10"
+              >
+                Open ↗
+              </a>
+            </div>
           </div>
+          <p className="mt-4 truncate border-t border-white/10 pt-3 text-sm text-slate-400" title={result.originalUrl}>
+            <span className="text-slate-500">Original: </span>
+            {result.originalUrl}
+          </p>
           <p role="status" className="sr-only">
             {copied === result.shortUrl ? "Copied to clipboard" : ""}
           </p>
@@ -163,17 +181,20 @@ export default function UrlShortener() {
       )}
 
       {recent.length > 0 && (
-        <section aria-label="Recent links" className="mt-8">
-          <h2 className="text-sm font-semibold text-slate-700">Recent links</h2>
-          <ul className="mt-2 divide-y divide-slate-200 rounded-2xl border border-slate-200 bg-white">
+        <section aria-label="Recent links" className="mt-10">
+          <h2 className="text-xs font-semibold tracking-widest text-slate-500 uppercase">Recent links</h2>
+          <ul className="mt-3 space-y-2">
             {recent.map((l) => (
-              <li key={l.shortUrl} className="flex items-center justify-between gap-3 px-4 py-3">
+              <li
+                key={l.shortUrl}
+                className="flex items-center justify-between gap-3 rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3 transition hover:border-white/20 hover:bg-white/[0.06]"
+              >
                 <div className="min-w-0">
                   <a
                     href={l.shortUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="block truncate text-sm font-medium text-indigo-600 hover:underline"
+                    className="block truncate text-sm font-semibold text-violet-300 hover:text-cyan-300"
                   >
                     {l.shortUrl}
                   </a>
@@ -184,9 +205,9 @@ export default function UrlShortener() {
                 <button
                   type="button"
                   onClick={() => copy(l.shortUrl)}
-                  className="shrink-0 rounded-lg border border-slate-300 px-3 py-1.5 text-xs font-medium text-slate-700 hover:bg-slate-50"
+                  className="shrink-0 rounded-lg border border-white/15 px-3 py-1.5 text-xs font-medium text-slate-200 transition hover:bg-white/10"
                 >
-                  {copied === l.shortUrl ? "Copied!" : "Copy"}
+                  {copied === l.shortUrl ? "Copied ✓" : "Copy"}
                 </button>
               </li>
             ))}
