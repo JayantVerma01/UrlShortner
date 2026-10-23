@@ -3,8 +3,6 @@ import { connectToDatabase } from "@/lib/mongodb";
 import { generateShortCode, isDuplicateKeyError, validateUrl } from "@/lib/url";
 import { Url } from "@/models/Url";
 
-export const runtime = "nodejs";
-export const dynamic = "force-dynamic";
 
 const MAX_ATTEMPTS = 5;
 

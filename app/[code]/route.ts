@@ -2,8 +2,6 @@ import { NextResponse } from "next/server";
 import { connectToDatabase } from "@/lib/mongodb";
 import { Url } from "@/models/Url";
 
-export const runtime = "nodejs";
-export const dynamic = "force-dynamic";
 
 export async function GET(
   request: Request,
